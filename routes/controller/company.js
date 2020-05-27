@@ -40,7 +40,7 @@ router.put('/', (req, res, next) => {
         return next({status: 400, msgEn: "Empty feilds"});
     };
 
-    Company.findOne({_id: companyId}, (err, company) => {
+    Company.findOne({_id: req.body.companyId}, (err, company) => {
         if (err) {
             return next({status: 500, msgEn: 'Something went wrong in edit company'});
         };
