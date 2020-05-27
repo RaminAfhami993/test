@@ -106,4 +106,32 @@ router.delete('/:productId', (req, res) => {
 
 
 
+//*************************************************************************************************** 
+// Get all companies with their products
+//*************************************************************************************************** 
+router.get('/:companyId', (req, res) => {
+    if (!req.params.companyId) {
+        return next({status: 400, msgEn: "Empty feilds"});
+    };
+
+    Company.findOne({_id: req.params.companyId}, (err, company) => {
+        if (err) {
+            return next({status: 500, msgEn: 'Something went wrong in get products'});
+        };
+        if (!company) {
+            return next({status: 400, msgEn: "Company not found"});
+        };
+
+        Product.find({company: req.params.companyId}, {_v: 0}, (err, products) => {
+            if (err) {
+                return next({status: 500, msgEn: 'Something went wrong in get products'});
+            };
+
+            return res.json(products);
+        });
+    });
+});
+
+
+
 module.exports = router;
