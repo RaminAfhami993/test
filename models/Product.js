@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 
 const ProductSchema = new Schema({
-    name: {
+    title: {
         type: String,
         unique: true,
         required: true,
@@ -11,7 +11,8 @@ const ProductSchema = new Schema({
     },
     type: {
         type: String,
-        required: true
+        required: true,
+        trim: true
     },
     productionDate: {
         type: Date,
