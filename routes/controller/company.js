@@ -32,6 +32,76 @@ router.post('/', (req, res, next) => {
 
 
 
+//*************************************************************************************************** 
+// Edit company
+//*************************************************************************************************** 
+router.put('/', (req, res, next) => {
+    if (!req.body.companyId && (!req.body.name || !req.body.phoneNumber)) {
+        return next({status: 400, msgEn: "Empty feilds"});
+    };
+
+    Company.findOne({_id: companyId}, (err, company) => {
+        if (err) {
+            return next({status: 500, msgEn: 'Something went wrong in edit company'});
+        };
+        if (!company) {
+            return next({status: 404, msgEn: 'Company not found'});
+        };
+
+        // Check company name
+        if (req.body.name !== undefined && (typeof(req.body.name) !== "string" || req.body.name.trim() === "")) {
+            return next({status: 404, msgEn: "Bad value for company name"});
+        };
+    
+        // Check Company phone number
+        if (req.body.name !== undefined && (typeof(req.body.name) !== "string" || req.body.name.trim() === "")) {
+            return next({status: 404, msgEn: "Bad value for phone number"});
+        };
+    
+        Company.findOne(
+            {
+                $and: [
+                    {
+                        $or: [{
+                            name: req.body.name,
+                        }],
+                        $or: [{
+                            phoneNumber: req.body.phoneNumber,
+                        }]
+                    },
+                    {
+                        _id: {$ne: company._id}
+                    }
+                ]
+            }, (err, existCompany) => {
+                
+            if (err) {
+                return next({status: 500, msgEn: 'Something went wrong in edit company'});
+            };
+            if (existCompany) {
+                return next({status: 406, msgEn: 'Company name or phone number already exist'});
+            };
+
+            if (req.body.name) company.name = req.body.name;
+            if (req.body.phoneNumber) company.phoneNumber = req.body.phoneNumber;
+            
+            company.save((err, company) => {
+                if (err) {
+                    return next({status: 500, msgEn: 'Something went wrong in edit company'});
+                };
+
+                return res.json(company);
+            });
+        });
+    });
+});
+
+
+
+
+//*************************************************************************************************** 
+// Get all companies with their products
+//*************************************************************************************************** 
 router.get('/all', (req, res) => {
     Company.find({}, {_v: 0}).lean().exec(async (err, companies) => {
         if (err) {
