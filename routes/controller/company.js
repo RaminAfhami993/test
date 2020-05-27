@@ -14,7 +14,7 @@ router.post('/', (req, res, next) => {
 
     Company.findOne({name: req.body.name.trim()}, (err, existCompany) => {
         if (err) {
-            return next({status: 500, msgEn: 'Something went wrong in create company'});
+            return next({status: 500, msgEn: 'Something went wrong in create new company'});
         };
         if (existCompany) return next({status: 406, msgEn: 'Company name already exist'});
 
@@ -22,7 +22,7 @@ router.post('/', (req, res, next) => {
             name: req.body.name,
             phoneNumber: req.body.phoneNumber
         }).save((err, newCompany) => {
-            if (err) return next({status: 500, msgEn: 'Something went wrong in create company'});
+            if (err) return next({status: 500, msgEn: 'Something went wrong in create new company'});
 
             return res.json(newCompany);
         });
