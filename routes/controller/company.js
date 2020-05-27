@@ -74,7 +74,7 @@ router.put('/', (req, res, next) => {
                     }
                 ]
             }, (err, existCompany) => {
-                
+
             if (err) {
                 return next({status: 500, msgEn: 'Something went wrong in edit company'});
             };
@@ -119,6 +119,38 @@ router.get('/all', (req, res) => {
         return res.json(companies);
     });
 });
+
+
+
+
+//*************************************************************************************************** 
+// Delete company
+//*************************************************************************************************** 
+router.delete('/:companyId', (req, res) => {
+
+    if (!req.params.companyId) {
+        return next({status: 400, msgEn: "Empty feilds"});
+    };
+
+    Company.findOneAndDelete({_id: req.params.companyId}, {_v: 0}, async (err, company) => {
+        if (err) {
+            return next({status: 500, msgEn: 'Something went wrong in delete company'});
+        };
+
+        if (!company) {
+            return next({status: 404, msgEn: 'Company not found'});
+        };
+
+        Product.deleteMany({company: company._id}, err => {
+            if (err) {
+                return next({status: 500, msgEn: 'Something went wrong in delete company'});
+            };
+
+            return res.json(company);
+        });
+    });
+});
+
 
 
 module.exports = router;
