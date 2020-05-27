@@ -32,4 +32,23 @@ router.post('/', (req, res, next) => {
 
 
 
+router.get('/all', (req, res) => {
+    Company.find({}, {_v: 0}).lean().exec(async (err, companies) => {
+        if (err) {
+            return next({status: 500, msgEn: 'Something went wrong in get companies'});
+        };
+
+        try {
+            for (let i = 0, companiesLength = companies.length; i < companiesLength; i++) {
+                companies[i].products = await Product.find({company: companies[i]._id}, {_v: 0});
+            };
+        } catch (err) {
+            return next({status: 500, msgEn: 'Something went wrong in get companies pruducts'});
+        };
+
+        return res.json(companies);
+    });
+});
+
+
 module.exports = router;
