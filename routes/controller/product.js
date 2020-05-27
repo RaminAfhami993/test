@@ -82,5 +82,28 @@ router.put('/', (req, res, next) => {
 
 
 
+//*************************************************************************************************** 
+// Delete product
+//*************************************************************************************************** 
+router.delete('/:productId', (req, res) => {
+
+    if (!req.params.productId) {
+        return next({status: 400, msgEn: "Empty feilds"});
+    };
+
+    Product.findOneAndDelete({_id: req.params.productId}, {_v: 0}, async (err, product) => {
+        if (err) {
+            return next({status: 500, msgEn: 'Something went wrong in delete product'});
+        };
+
+        if (!product) {
+            return next({status: 404, msgEn: 'Product not found'});
+        };
+
+        return res.json(product);
+    });
+});
+
+
 
 module.exports = router;
