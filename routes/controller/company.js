@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const Company = require('../../models/company.js');
-const Product = require('../../models/product.js');
+const Company = require('../../models/company');
+const Product = require('../../models/product');
 
 
 
