@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const Company = require('../../models/company');
-const Product = require('../../models/product');
+const Company = require('../../models/company.js');
+const Product = require('../../models/product.js');
 
 
 
@@ -82,8 +82,8 @@ router.put('/', (req, res, next) => {
                 return next({status: 406, msgEn: 'Company name or phone number already exist'});
             };
 
-            if (req.body.name) company.name = req.body.name;
-            if (req.body.phoneNumber) company.phoneNumber = req.body.phoneNumber;
+            req.body.name && (company.name = req.body.name);
+            req.body.phoneNumber && (company.phoneNumber = req.body.phoneNumber);
             
             company.save((err, company) => {
                 if (err) {

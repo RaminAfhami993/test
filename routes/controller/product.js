@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const Product = require('../../models/product');
+const Product = require('../../models/product.js');
 
 
 
@@ -66,9 +66,9 @@ router.put('/', (req, res, next) => {
             return next({status: 404, msgEn: "Bad value for production date"});
         };
     
-        if (req.body.title) company.title = req.body.title;
-        if (req.body.type) company.type = req.body.type;
-        if (req.body.productionDate) company.productionDate = req.body.productionDate;
+        req.body.title && (company.title = req.body.title);
+        req.body.type && (company.type = req.body.type);
+        req.body.productionDate && (company.productionDate = req.body.productionDate);
         
         product.save((err, product) => {
             if (err) {
