@@ -4,7 +4,9 @@ const company = require('./controller/company');
 const product = require('./controller/product');
 
 
-
+router.get('/', (req, res) => {
+  res.json(5750);
+});
 
 
 /****************************************************
