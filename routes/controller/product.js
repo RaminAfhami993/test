@@ -85,7 +85,7 @@ router.put('/', (req, res, next) => {
 //*************************************************************************************************** 
 // Delete product
 //*************************************************************************************************** 
-router.delete('/:productId', (req, res) => {
+router.delete('/:productId', (req, res, next) => {
 
     if (!req.params.productId) {
         return next({status: 400, msgEn: "Empty feilds"});
@@ -109,7 +109,7 @@ router.delete('/:productId', (req, res) => {
 //*************************************************************************************************** 
 // Get all companies with their products
 //*************************************************************************************************** 
-router.get('/:companyId', (req, res) => {
+router.get('/:companyId', (req, res, next) => {
     if (!req.params.companyId) {
         return next({status: 400, msgEn: "Empty feilds"});
     };

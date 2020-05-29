@@ -102,21 +102,13 @@ router.put('/', (req, res, next) => {
 //*************************************************************************************************** 
 // Get all companies with their products
 //*************************************************************************************************** 
-router.get('/all', (req, res) => {
-    Company.find({}, {_v: 0}).lean().exec(async (err, companies) => {
+router.get('/all', (req, res, next) => {
+    Company.find({}, {_v: 0}).lean().exec((err, companies) => {
         if (err) {
             return next({status: 500, msgEn: 'Something went wrong in get companies'});
         };
 
-        try {
-            for (let i = 0, companiesLength = companies.length; i < companiesLength; i++) {
-                companies[i].products = await Product.find({company: companies[i]._id}, {_v: 0});
-            };
-        } catch (err) {
-            return next({status: 500, msgEn: 'Something went wrong in get companies pruducts'});
-        };
-
-        return res.json(companies);
+        return res.render('pages/companies', {companies});
     });
 });
 
@@ -126,7 +118,7 @@ router.get('/all', (req, res) => {
 //*************************************************************************************************** 
 // Delete company
 //*************************************************************************************************** 
-router.delete('/:companyId', (req, res) => {
+router.delete('/:companyId', (req, res, next) => {
 
     if (!req.params.companyId) {
         return next({status: 400, msgEn: "Empty feilds"});
