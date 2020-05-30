@@ -8,14 +8,25 @@
 }
 
 #footer {
-  font-size: 10px;
+  font-size: 10px;  
   color: whitesmoke;
   bottom: 0;
   top: unset;
 }
 
+h3 {
+  margin-top: 100px;
+  color: grey;
+}
 
-#addNewCompanyButton {
+h3 span {
+  font-weight: bold;
+  color: black;
+}
+
+
+
+#addNewProductButton {
   border-radius: 100%;
   padding: 1px 16px 6px ;
   font-size: 30px;
@@ -35,7 +46,7 @@
 }
 
 table {
-  margin: 200px;
+  margin: 100px;
   max-width: 50% !important;
 }
 

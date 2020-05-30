@@ -60,19 +60,14 @@ router.put('/', (req, res, next) => {
     
         Company.findOne(
             {
-                $and: [
-                    {
-                        $or: [{
-                            name: req.body.name,
-                        }],
-                        $or: [{
-                            phoneNumber: req.body.phoneNumber,
-                        }]
-                    },
-                    {
-                        _id: {$ne: company._id}
-                    }
-                ]
+                $or: [{
+                    name: req.body.name,
+                    _id: {$ne: company._id}
+                },
+                {
+                    phoneNumber: req.body.phoneNumber,
+                    _id: {$ne: company._id}
+                }]                    
             }, (err, existCompany) => {
 
             if (err) {
@@ -138,7 +133,13 @@ router.delete('/:companyId', (req, res, next) => {
                 return next({status: 500, msgEn: 'Something went wrong in delete company'});
             };
 
-            return res.json(company);
+            Company.find({}, (err, companies) => {
+                if (err) {
+                    return next({status: 500, msgEn: 'Something went wrong in delete company'});
+                };
+    
+                return res.json(companies);
+            })
         });
     });
 });

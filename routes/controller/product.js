@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const Product = require('../../models/product.js');
+const Company = require('../../models/company');
+const Product = require('../../models/product');
+
 
 
 
@@ -47,7 +49,7 @@ router.put('/', (req, res, next) => {
         if (err) {
             return next({status: 500, msgEn: 'Something went wrong in edit product'});
         };
-        if (!company) {
+        if (!product) {
             return next({status: 404, msgEn: 'Product not found'});
         };
 
@@ -62,13 +64,13 @@ router.put('/', (req, res, next) => {
         };
 
         // Check production date
-        if (req.body.productionDate !== undefined && productionDate instanceof Date) {
+        if (req.body.productionDate !== undefined && req.body.productionDate instanceof Date) {
             return next({status: 404, msgEn: "Bad value for production date"});
         };
     
-        req.body.title && (company.title = req.body.title);
-        req.body.type && (company.type = req.body.type);
-        req.body.productionDate && (company.productionDate = req.body.productionDate);
+        req.body.title && (product.title = req.body.title);
+        req.body.type && (product.type = req.body.type);
+        req.body.productionDate && (product.productionDate = req.body.productionDate);
         
         product.save((err, product) => {
             if (err) {
@@ -100,7 +102,13 @@ router.delete('/:productId', (req, res, next) => {
             return next({status: 404, msgEn: 'Product not found'});
         };
 
-        return res.json(product);
+        Product.find({company: product.company}, {_v: 0}, (err, products) => {
+            if (err) {
+                return next({status: 500, msgEn: 'Something went wrong in delete product'});
+            };
+
+            return res.json(products);
+        });
     });
 });
 
@@ -114,7 +122,7 @@ router.get('/:companyId', (req, res, next) => {
         return next({status: 400, msgEn: "Empty feilds"});
     };
 
-    Company.findOne({_id: req.params.companyId}, (err, company) => {
+    Company.findById(req.params.companyId, (err, company) => {
         if (err) {
             return next({status: 500, msgEn: 'Something went wrong in get products'});
         };
@@ -127,7 +135,7 @@ router.get('/:companyId', (req, res, next) => {
                 return next({status: 500, msgEn: 'Something went wrong in get products'});
             };
 
-            return res.json(products);
+            return res.render('pages/products', {products, company});
         });
     });
 });

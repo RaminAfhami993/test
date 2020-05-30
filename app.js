@@ -11,6 +11,8 @@ const config = require('./config/config');
 
 const app = express();
 
+app.disable('view cache');
+
 // handle mongoose collection.ensureIndex warn
 mongoose.set('useNewUrlParser', true);
 mongoose.set('useFindAndModify', false);

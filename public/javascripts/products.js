@@ -9,18 +9,21 @@ window.addEventListener( "pageshow", function ( event ) {
     }
 });
 
+
 $(document).ready(function () {
-    //Use this inside your document ready jQuery 
-    $('#addCompany').click(function () {
+    $('#addProduct').click(function () {
+        
         $.ajax({
             type: "POST",
-            url: "/api/company",
+            url: "/api/product",
             data: {
-                name: $("#companyName").val(),
-                phoneNumber: $("#companyPhoneNumber").val(),
+                title: $("#title").val(),
+                type: $("#type").val(),
+                productionDate: $("#productionDate").val(),
+                company: $("#companyName")[0].getAttribute("companyId")
             },
             success: function (res) {
-                addThisRowToCompaniesTable(res);
+                addThisRowToProductsTable(res);
             },
             error: function (err) {
                 displayDangerAlert(err.responseText);
@@ -38,17 +41,19 @@ const displayDangerAlert = (message) => {
 };
 
 
-const addThisRowToCompaniesTable = (data) => {
+const addThisRowToProductsTable = (data) => {
 
-    $("#addNewCompanyModal").modal('hide');
-    $("#companyName").val("");
-    $("#companyPhoneNumber").val("");
+    $("#addNewProductModal").modal('hide');
+    $("#title").val("");
+    $("#type").val("");
+    $("#productionDate").val("");
 
     $('tbody').append(`
         <tr elementId="${data._id}" index="${$('tbody tr:last td')[0]? Number($('tbody tr:last td')[0].innerHTML) : 0}">
             <td>${$('tbody tr:last td')[0]? Number($('tbody tr:last td')[0].innerHTML) : 1}</td>
-            <td>${data.name}</td>
-            <td>${data.phoneNumber}</td>
+            <td>${data.title}</td>
+            <td>${data.type}</td>
+            <td>${data.productionDate}</td>
             <td>
                 <span class="material-icons text-danger" onclick="deleteRow(this)">
                     delete_forever
@@ -56,11 +61,6 @@ const addThisRowToCompaniesTable = (data) => {
                 <span class="material-icons text-warning" onclick="makeRowEditable(this)">
                     create
                 </span>
-                <a href="http://localhost:3000/api/product/${data._id}">
-                    <span class="material-icons text-success">
-                        read_more
-                    </span>
-                </a>
             </td>
         </tr>
     `);
@@ -71,9 +71,10 @@ const makeRowEditable = (element) => {
 
     const TDs = $(`tbody tr:eq(${[element.parentNode.parentNode.getAttribute('index')]}) td`);
 
-    TDs[1].innerHTML = `<input type="text" id="editCompanyName" previousValue="${TDs[1].innerHTML}" value="${TDs[1].innerHTML}">`
-    TDs[2].innerHTML = `<input type="text" id="editCompanyPhoneNumber" previousValue="${TDs[2].innerHTML}" value="${TDs[2].innerHTML}">`
-    TDs[3].innerHTML = `<button type="button" class="btn btn-primary" onclick="editElement(this)">Send</button> 
+    TDs[1].innerHTML = `<input type="text" id="editProductTitle" previousValue="${TDs[1].innerHTML}" value="${TDs[1].innerHTML}">`
+    TDs[2].innerHTML = `<input type="text" id="editProductType" previousValue="${TDs[2].innerHTML}" value="${TDs[2].innerHTML}">`
+    TDs[3].innerHTML = `<input type="date" id="editProductProductionDate" previousValue="${TDs[3].innerHTML}" value="${TDs[3].innerHTML}">`
+    TDs[4].innerHTML = `<button type="button" class="btn btn-primary" onclick="editElement(this)">Send</button> 
     <button type="button" class="btn btn-danger" onclick="cancelEdit(this)">Cancel</button>`
 };
 
@@ -85,18 +86,14 @@ const cancelEdit = (element) => {
     
     TDs[1].innerHTML = inputs[0].getAttribute('previousValue');
     TDs[2].innerHTML = inputs[1].getAttribute('previousValue');
-    TDs[3].innerHTML = `
+    TDs[3].innerHTML = inputs[2].getAttribute('previousValue');
+    TDs[4].innerHTML = `
         <span class="material-icons text-danger" onclick="deleteRow(this)">
             delete_forever
         </span>
         <span class="material-icons text-warning" onclick="makeRowEditable(this)">
             create
         </span>
-        <a href="http://localhost:3000/api/product/${[element.parentNode.parentNode.getAttribute('elementId')]}">
-            <span class="material-icons text-success">
-                read_more
-            </span>
-        </a>
     `
 }
 
@@ -104,18 +101,17 @@ const cancelEdit = (element) => {
 const editElement = (element) => {
     $.ajax({
         type: "PUT",
-        url: "/api/company",
+        url: "/api/product",
         data: {
-            companyId: element.parentNode.parentNode.getAttribute('elementId'),
-            name: $("#editCompanyName").val(),
-            phoneNumber: $("#editCompanyPhoneNumber").val(),
+            productId: element.parentNode.parentNode.getAttribute('elementId'),
+            title: $("#editProductTitle").val(),
+            type: $("#editProductType").val(),
+            productionDate: $("#editProductProductionDate").val(),
         },
         success: function (res) {
             updateRow(res, element);
         },
         error: function (err) {
-            console.log(err);
-
             displayBodyDangerAlert(err.responseText);
         }
     });
@@ -125,20 +121,16 @@ const editElement = (element) => {
 const updateRow = (newData, element) => {
     const TDs = $(`tbody tr:eq(${[element.parentNode.parentNode.getAttribute('index')]}) td`);
     
-    TDs[1].innerHTML = newData.name;
-    TDs[2].innerHTML = newData.phoneNumber;
-    TDs[3].innerHTML = `
+    TDs[1].innerHTML = newData.title;
+    TDs[2].innerHTML = newData.type;
+    TDs[3].innerHTML = newData.productionDate;
+    TDs[4].innerHTML = `
         <span class="material-icons text-danger" onclick="deleteRow(this)">
             delete_forever
         </span>
         <span class="material-icons text-warning" onclick="makeRowEditable(this)">
             create
         </span>
-        <a href="http://localhost:3000/api/product/${[element.parentNode.parentNode.getAttribute('elementId')]}">
-            <span class="material-icons text-success">
-                read_more
-            </span>
-        </a>
     `
 };
 
@@ -154,10 +146,10 @@ const deleteRow = (element) => {
 
     $.ajax({
         type: "DELETE",
-        url: `/api/company/${ELEMENT_ID}`,
+        url: `/api/product/${ELEMENT_ID}`,
         success: function (res) {            
-            displayBodySuccessAlert("Company deleted successfully");
-            updateCompaniesTable(res);
+            displayBodySuccessAlert("Product deleted successfully");
+            updateProductsTable(res);
         },
         error: function (err) {
             displayBodyDangerAlert(err.responseText);
@@ -172,15 +164,16 @@ const displayBodySuccessAlert = (message) => {
     $('body>#successAlert').fadeOut(3000);
 };
 
-const updateCompaniesTable = (data) => {
+const updateProductsTable = (data) => {
     $('tbody').html("");
 
     for (let i = 0; i < data.length; i++) {
         $('tbody').append(`
             <tr elementId="${data[i]._id}" index="${i}">
                 <td>${i + 1}</td>
-                <td>${data[i].name}</td>
-                <td>${data[i].phoneNumber}</td>
+                <td>${data[i].title}</td>
+                <td>${data[i].type}</td>
+                <td>${data[i].productionDate}</td>
                 <td>
                     <span class="material-icons text-danger" onclick="deleteRow(this)">
                         delete_forever
@@ -188,11 +181,6 @@ const updateCompaniesTable = (data) => {
                     <span class="material-icons text-warning" onclick="makeRowEditable(this)">
                         create
                     </span>
-                    <a href="http://localhost:3000/api/product/${data[i]._id}">
-                    <span class="material-icons text-success">
-                        read_more
-                    </span>
-                </a>
                 </td>
             </tr>
         `);
