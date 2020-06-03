@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include('../partials/head') -%>
+    <link rel="stylesheet" href="/stylesheets/products.css">
+    <title>Companies</title>
+</head>
+
+<body>
+
+    <%- include('../partials/header', {title: "Products"}) -%>
+
+    <h3>Company name: <span id="companyName" companyId="<%= company._id %>"><%= company.name %></span></h3>
+
+    <button type="button" class="btn btn-success" id="addNewProductButton" data-toggle="modal" data-target="#addNewProductModal"
+        data-whatever="@mdo">+</button>
+
+
+    <div class="modal fade" id="addNewProductModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">New Product</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="companyName" class="col-form-label">title:</label>
+                            <input type="text" class="form-control" id="title" placeholder="Example: Glass">
+                        </div>
+                        <div class="form-group">
+                            <label for="companyPhoneNumber" class="col-form-label">type:</label>
+                            <input type="text" class="form-control" id="type" placeholder="Example: A">
+                        </div>
+                        <div class="form-group">
+                            <label for="companyPhoneNumber" class="col-form-label">productionDate:</label>
+                            <input type="date" class="form-control" id="productionDate">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <%- include('../partials/dangerAlert') -%>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="addProduct">Add Product</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <table class="table table-striped table-secondary col-md-6 offset-3">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">title</th>
+            <th scope="col">type</th>
+            <th scope="col">production date</th>
+            <th scope="col">options</th>
+          </tr>
+        </thead>
+        <tbody>
+
+            <% for (let i = 0, len = products.length; i < len; i++) { %>
+                <tr elementId="<%= products[i]._id %>" index="<%= i %>">
+                    <td><%= i + 1 %></td>
+                    <td><%= products[i].title %></td>
+                    <td><%= products[i].type %></td>
+                    <td><%= products[i].productionDate %></td>
+                    <td>
+                        <span class="material-icons text-danger" onclick="deleteRow(this)">
+                            delete_forever
+                        </span>
+                        <span class="material-icons text-warning" onclick="makeRowEditable(this)">
+                            create
+                        </span>
+                    </td>
+                </tr>
+            <% } %>
+        </tbody>
+      </table>
+
+      <br><br><br><br><br><br>
+
+
+
+
+
+
+    <%- include('../partials/dangerAlert') -%>
+
+    <%- include('../partials/successAlert') -%>
+
+    <%- include('../partials/footer') -%>
+
+    <%- include('../partials/jsSrcs') -%>
+    <script src="/javascripts/products.js"></script>
+</body>
+
+</html>

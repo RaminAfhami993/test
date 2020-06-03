@@ -1,7 +1,6 @@
 const createError = require('http-errors');
 const express = require('express');
 const path = require('path');
-const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 
 
@@ -11,6 +10,8 @@ const config = require('./config/config');
 
 
 const app = express();
+
+app.disable('view cache');
 
 // handle mongoose collection.ensureIndex warn
 mongoose.set('useNewUrlParser', true);
@@ -37,7 +38,7 @@ app.use(passport.initialize());
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
+app.set('view engine', 'ejs');
 
 app.use(express.json());
 
@@ -46,7 +47,6 @@ app.use(bodyParser.json()); // parse application/json
 app.use(bodyParser.json({type: 'application/vnd.api+json'})); // parse application/vnd.api+json as json
 
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/api', api);
@@ -59,9 +59,8 @@ app.use(function(req, res, next) {
 // error handler
 app.use(function(err, req, res, next) {
   console.log(err);
-
-  //TODO: handle err 500 message: Something went wrong!
-  err.status ? res.status(err.status).json(err) : res.status(500).json(err);
+  
+  res.status(err.status).json(err.msgEn)
 });
 
 module.exports = app;
