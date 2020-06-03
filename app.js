@@ -5,7 +5,6 @@ const bodyParser = require('body-parser');
 
 
 const mongoose = require('mongoose');
-const passport = require('passport');
 const config = require('./config/config');
 
 
@@ -31,9 +30,6 @@ app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
   next();
 });
-
-// init passport
-app.use(passport.initialize());
 
 
 // view engine setup
