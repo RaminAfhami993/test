@@ -35,4 +35,52 @@ router.post('/', (req, res, next) => {
 
 
 
+//*************************************************************************************************** 
+// Edit product
+//*************************************************************************************************** 
+router.put('/', (req, res, next) => {
+    if (!req.body.productId) {
+        return next({status: 400, msgEn: "Empty feilds"});
+    };
+
+    Product.findOne({_id: req.body.productId}, (err, product) => {
+        if (err) {
+            return next({status: 500, msgEn: 'Something went wrong in edit product'});
+        };
+        if (!company) {
+            return next({status: 404, msgEn: 'Product not found'});
+        };
+
+        // Check product title
+        if (req.body.title !== undefined && (typeof(req.body.title) !== "string" || req.body.title.trim() === "")) {
+            return next({status: 404, msgEn: "Bad value for product title"});
+        };
+    
+        // Check product type
+        if (req.body.type !== undefined && (typeof(req.body.type) !== "string" || req.body.type.trim() === "")) {
+            return next({status: 404, msgEn: "Bad value for product type"});
+        };
+
+        // Check production date
+        if (req.body.productionDate !== undefined && productionDate instanceof Date) {
+            return next({status: 404, msgEn: "Bad value for production date"});
+        };
+    
+        if (req.body.title) company.title = req.body.title;
+        if (req.body.type) company.type = req.body.type;
+        if (req.body.productionDate) company.productionDate = req.body.productionDate;
+        
+        product.save((err, product) => {
+            if (err) {
+                return next({status: 500, msgEn: 'Something went wrong in edit product'});
+            };
+
+            return res.json(product);
+        });
+    });
+});
+
+
+
+
 module.exports = router;
