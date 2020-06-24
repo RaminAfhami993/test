@@ -10,7 +10,7 @@ const CompanySchema = new Schema({
         trim: true
     },
     phoneNumber: {
-        type: Number,
+        type: String,
         unique: true
     },
     createdAt: {

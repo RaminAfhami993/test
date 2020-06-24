@@ -1,0 +1,55 @@
+#nav {
+  font-size: 30px;
+  font-weight: bold;
+  color: whitesmoke;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  justify-content: center;
+}
+
+#footer {
+  font-size: 10px;
+  color: whitesmoke;
+  bottom: 0;
+  top: unset;
+}
+
+
+#addNewCompanyButton {
+  border-radius: 100%;
+  padding: 1px 16px 6px ;
+  font-size: 30px;
+  font-weight: bold;
+  position: fixed;
+  top: 100px;
+  left: 49%;
+  z-index: 100;
+}
+
+
+.modal-footer #dangerAlert {
+  position: absolute;
+  bottom: 0;
+  left: 10px;
+  display: none;
+}
+
+table {
+  margin: 200px;
+  max-width: 50% !important;
+}
+
+table td, table th {
+  text-align: center;
+}
+
+td span {
+  cursor: pointer;
+}
+
+body>#dangerAlert,  body>#successAlert{
+  position: absolute;
+  bottom: 30px;
+  left: 10px;
+  display: none;
+}
